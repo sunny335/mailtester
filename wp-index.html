@@ -39,7 +39,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-            margin-top: 30px;
+        margin-top: 30px;
       }
 
       label {
@@ -51,26 +51,50 @@
         width: 100%;
         padding: 10px;
         margin-bottom: 20px;
+        margin-top: 20px;
         box-sizing: border-box;
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 16px;
       }
-      input:focus{
+
+      input:focus {
         outline: none;
       }
+
+      label {
+        margin: 0;
+      }
       button {
-        background-color: #4caf50;
+        /* background-color: #4caf50;
         color: #fff;
         padding: 10px 15px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 16px; */
+
+        background-color: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        border-radius: 5px;
+        color: #4a4a4a;
+        cursor: default;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin: 11px 4px;
+        min-width: 54px;
+        text-align: center;
+
+        padding: 10px;
+        margin-top: 15px;
+        cursor: pointer;
       }
 
       button:hover {
-        background-color: #45a049;
+        /* background-color: #45a049; */
+        border: 1px solid #c6c6c6;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        color: #222;
       }
 
       #resultMessage {
@@ -78,56 +102,87 @@
         color: #333;
       }
 
-      .radio-container,.radio-div {
+      .radio-container,
+      .radio-div {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 10px;
       }
 
-
+      .radio-div input{
+        margin: 0;
+      }
     </style>
   </head>
   <body>
- <div id="container">
-  <h1>Email Tester</h1>
-  <p>Enter an email address to test its validity:</p>
+    <div id="container">
+      <h1>Email Tester</h1>
+      <p>Enter an email address to test its validity:</p>
 
-  <div class="radio-container">
-    <div class="radio-div">
-      <input type="radio" id="tab1" name="tabs" value="Verify" onclick="showForm('emailForm')" checked />
-      <label for="tab1">Verify</label>
+      <div class="radio-container">
+        <div class="radio-div">
+          <input
+            type="radio"
+            id="tab1"
+            name="tabs"
+            value="Verify"
+            onclick="showForm('emailForm')"
+            checked
+          />
+          <label for="tab1">Verify</label>
+        </div>
+
+        <div class="radio-div">
+          <input
+            type="radio"
+            id="tab2"
+            name="tabs"
+            value="Find"
+            onclick="showForm('findEmailForm')"
+          />
+          <label for="tab2">Find</label>
+        </div>
+      </div>
+
+      <form id="emailForm">
+        <label for="email">Email Address:</label>
+        <input type="email" id="email1" name="email" required />
+
+        <button type="button" id="btnFind" onclick="testEmail()">
+          Find Email
+        </button>
+      </form>
+
+      <form id="findEmailForm" style="display: none">
+        <input
+          type="text"
+          id="firstName"
+          placeholder="FirstName"
+          name="firstName"
+          required
+        />
+
+        <input
+          type="text"
+          id="lastName"
+          placeholder="LastName"
+          name="lastName"
+          required
+        />
+        <input
+          type="text"
+          id="domain"
+          placeholder="Domain"
+          name="domain"
+          required
+        />
+
+        <button type="button" id="btnFind2">Find Email</button>
+      </form>
+
+      <div id="results"></div>
     </div>
-
-    <div class="radio-div">
-      <input type="radio" id="tab2" name="tabs" value="Find" onclick="showForm('findEmailForm')" />
-      <label for="tab2">Find</label>
-    </div>
-  </div>
-
-  <form id="emailForm">
-    <label for="email">Email Address:</label>
-    <input type="email" id="email1" name="email" required />
-
-    <button type="button" id="btnFind" onclick="testEmail()">
-      Find Email
-    </button>
-  </form>
-
-  <form id="findEmailForm" style="display: none;">
-
-    <input type="text" id="firstName" placeholder="FirstName" name="firstName" required />
-
-    <input type="text" id="lastName" placeholder="LastName" name="lastName" required />
-    <input type="text" id="domain" placeholder="Domain" name="domain" required />
-
-    <button type="button" id="btnFind2" >
-      Find Email
-    </button>
-  </form>
-
-  <div id="results"></div>
-</div>
 
     <!-- Add your JavaScript script here -->
     <script>
@@ -243,17 +298,13 @@
       }
     </script>
 
+    <script>
+      function showForm(formId) {
+        document.getElementById('emailForm').style.display = 'none';
+        document.getElementById('findEmailForm').style.display = 'none';
 
-<script>
-  function showForm(formId) {
-    document.getElementById('emailForm').style.display = 'none';
-    document.getElementById('findEmailForm').style.display = 'none';
-
-    document.getElementById(formId).style.display = 'block';
-  }
-
-
-</script>
-
+        document.getElementById(formId).style.display = 'block';
+      }
+    </script>
   </body>
 </html>
