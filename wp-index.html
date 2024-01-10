@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Tester</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      #container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      p {
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+            margin-top: 30px;
+      }
+
+      label {
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      input:focus{
+        outline: none;
+      }
+      button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #resultMessage {
+        margin-top: 20px;
+        color: #333;
+      }
+
+      .radio-container,.radio-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+
+    </style>
+  </head>
+  <body>
+ <div id="container">
+  <h1>Email Tester</h1>
+  <p>Enter an email address to test its validity:</p>
+
+  <div class="radio-container">
+    <div class="radio-div">
+      <input type="radio" id="tab1" name="tabs" value="Verify" onclick="showForm('emailForm')" checked />
+      <label for="tab1">Verify</label>
+    </div>
+
+    <div class="radio-div">
+      <input type="radio" id="tab2" name="tabs" value="Find" onclick="showForm('findEmailForm')" />
+      <label for="tab2">Find</label>
+    </div>
+  </div>
+
+  <form id="emailForm">
+    <label for="email">Email Address:</label>
+    <input type="email" id="email1" name="email" required />
+
+    <button type="button" id="btnFind" onclick="testEmail()">
+      Find Email
+    </button>
+  </form>
+
+  <form id="findEmailForm" style="display: none;">
+
+    <input type="text" id="firstName" placeholder="FirstName" name="firstName" required />
+
+    <input type="text" id="lastName" placeholder="LastName" name="lastName" required />
+    <input type="text" id="domain" placeholder="Domain" name="domain" required />
+
+    <button type="button" id="btnFind2" >
+      Find Email
+    </button>
+  </form>
+
+  <div id="results"></div>
+</div>
+
+    <!-- Add your JavaScript script here -->
+    <script>
+      function testEmail() {
+        document.getElementById('btnFind').innerText = 'Loading...';
+        document.getElementById('btnFind').disabled = true;
+
+        let emails = document.getElementById('email').value;
+        let emailArr = emails.includes(',') ? emails.split(',') : [emails];
+        validateEmails(emailArr);
+        //add time out 1 sec
+        setTimeout(function () {}, 1000);
+      }
+
+      function validateEmails(emails) {
+        const url =
+          'https://script.google.com/macros/s/AKfycbxMj0BnEvVFjbW6n2RKXlL7_sT4GtaQQo1hZQNz8OQYCLgiAUvJcMU17eVysQKj_kmU/exec';
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          },
+          body: JSON.stringify({ emails: emails, api_key: '12345678' }),
+          followRedirects: true,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById('btnFind').innerHTML = 'Find Email';
+            document.getElementById('btnFind').disabled = false;
+
+            document.getElementById('results').innerHTML += generateTable(
+              data.response.results
+            );
+            if (
+              data.response.results.length == 1 &&
+              data.response.results[0].exists &&
+              data.response.results[0].exists == true
+            ) {
+              return true;
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        return false;
+      }
+
+      function generateTable(data) {
+        var html = '<table>';
+
+        // Loop through the array, incrementing by 2 for two columns
+        for (var i = 0; i < data.length; i += 2) {
+          html += '<tr>'; // Start a new row
+
+          // First column
+          html += '<td>' + data[i].email + '</td>';
+          html +=
+            '<td>' + data[i].exists && data[i].exists == true
+              ? 'TRUE'
+              : 'FALSE' + '</td>';
+
+          html += '</tr>'; // Close the row
+        }
+
+        html += '</table>';
+        return html;
+      }
+
+      function generateEmailVariations() {
+        //disable the button with option loading
+        document.getElementById('btn').innerText = 'Loading...';
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('btn').disabled = true;
+        // Get user input
+        var firstName = document
+          .getElementById('firstName')
+          .value.trim()
+          .toLowerCase();
+        var lastName = document
+          .getElementById('lastName')
+          .value.trim()
+          .toLowerCase();
+        var domain = document
+          .getElementById('domain')
+          .value.trim()
+          .toLowerCase();
+
+        // Simple validation
+        if (!firstName || !lastName || !domain) {
+          document.getElementById('result').innerText =
+            'Please enter all fields correctly.';
+          return;
+        }
+
+        // List of email variations
+        var emails = [
+          `${firstName}@${domain}`,
+          `${lastName}@${domain}`,
+          `${firstName}.${lastName}@${domain}`,
+          `${firstName}.${lastName}@${domain}`,
+          `${firstName}${lastName}@${domain}`,
+          `${firstName}${lastName}@${domain}`,
+          `${firstName}_${lastName}@${domain}`,
+          `${firstName}-${lastName}@${domain}`,
+          `${firstName}@${lastName.substring(0, 3)}.${domain}`,
+        ];
+        let resultEmail = validateEmails(emails);
+
+        document.getElementById('btn').innerText = 'Find';
+        document.getElementById('btn').style.color = 'blue';
+        document.getElementById('btn').disabled = false;
+      }
+    </script>
+
+
+<script>
+  function showForm(formId) {
+    document.getElementById('emailForm').style.display = 'none';
+    document.getElementById('findEmailForm').style.display = 'none';
+
+    document.getElementById(formId).style.display = 'block';
+  }
+
+
+</script>
+
+  </body>
+</html>
