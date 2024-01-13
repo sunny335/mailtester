@@ -339,7 +339,7 @@ min-width: 180px;
           document.getElementById('status-container').style.display = 'flex';
 
           document.getElementById('btnFind').disabled = false;
-
+console.log("data",data)
           document.getElementById('results-container').innerHTML += generateTable(
             data.response.results
           );
